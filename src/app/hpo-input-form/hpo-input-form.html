@@ -1,0 +1,7 @@
+<form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="mt-4">
+  <div class="mb-3">
+    <label for="name" class="form-label">HPO term</label>
+    <input id="termId" formControlName="termId" class="form-control" />
+  </div>
+  <button type="submit" class="btn btn-primary" [disabled]="!userForm.valid">Submit</button>
+</form>

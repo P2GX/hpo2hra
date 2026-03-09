@@ -1,9 +1,10 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import HpoInputFormComponent from './hpo-input-form/hpo-input-form';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, HpoInputFormComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
