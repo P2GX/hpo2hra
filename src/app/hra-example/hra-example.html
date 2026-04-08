@@ -1,6 +1,14 @@
 <p>
   UBERON: <em>{{ uberon() }}</em>
 </p>
+
+@if( uberon_id() ) {
+<p>Mapped uberon ''{{ uberon_id() }}''</p>
+} @else {
+  <p>Could not retrieve UBERON for HP {{ hpo_target() }} with URL= {{hpo_purl() }}</p>
+}
+
+
 <p>
   CLs: <em>{{ cellStructures() }}</em>
 </p>

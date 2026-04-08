@@ -5,10 +5,13 @@ import {
   ElementRef,
   inject,
   input,
+  OnInit,
   Renderer2,
   signal,
 } from '@angular/core';
 import { HraKgService, V1Service } from '@hra-api/ng-client';
+import { HpoMapService } from '../service/hpo-mapper';
+import { HraRecord } from '../model/model';
 
 @Component({
   selector: 'app-hra-example',
@@ -16,9 +19,36 @@ import { HraKgService, V1Service } from '@hra-api/ng-client';
   templateUrl: './hra-example.html',
   styleUrl: './hra-example.css',
 })
-export class HraExample {
+export class HraExample implements OnInit {
+
+
+  private hpo_mapper = inject(HpoMapService);
   // E.g. `UBERON:0001229` for renal corpuscle
   uberon = input<string>('UBERON:0001229');
+  hpo_target = input.required<string>(); // cardiomegaly
+
+  hpo_purl = computed(() => {
+    const hpo_id = this.hpo_target();
+    const formattedId = hpo_id.replace(':', '_');
+    return `http://purl.obolibrary.org/obo/${formattedId}`;
+  })
+
+
+  // TODO , the CSV file has http://purl.obolibrary.org/obo/HP_0410157 and 
+  // the example we have is starting with something like HP:0410157
+  uberon_record = computed<HraRecord|null>(() => {
+    return this.hpo_mapper.getRecord(this.hpo_purl());
+  })
+
+  uberon_id = computed<string|null>(() => {
+      const urecord = this.uberon_record();
+      if (! urecord) return null;
+      return urecord.term;
+  });
+
+  ngOnInit(): void {
+    console.log("HraExample input=", this.hpo_target());
+  }
 
   // An array with Cell ontology CURIEs for highlighting the illustration substructures.
   cellStructures = input<string[]>(['CL:123', 'CL:456']);
@@ -88,4 +118,5 @@ export class HraExample {
         this.data.set(JSON.stringify(result));
       });
   }
+  
 }
