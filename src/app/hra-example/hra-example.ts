@@ -24,7 +24,10 @@ export class HraExample implements OnInit {
 
   private hpo_mapper = inject(HpoMapService);
   // E.g. `UBERON:0001229` for renal corpuscle
-  uberon = input<string>('UBERON:0001229');
+  uberon = input<string>('UBERON:0001229'); // UBERON:0002081, cardiac atrium
+
+
+  
   hpo_target = input.required<string>(); // cardiomegaly
 
   hpo_purl = computed(() => {
