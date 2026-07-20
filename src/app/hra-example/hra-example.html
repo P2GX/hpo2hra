@@ -1,20 +1,18 @@
-<p>
-  UBERON: <em>{{ uberon() }}</em>
-</p>
 
-@if( uberon_id() ) {
-<p>Mapped uberon ''{{ uberon_id() }}''</p>
-} @else {
-  <p>Could not retrieve UBERON for HP {{ hpo_target() }} with URL= {{hpo_purl() }}</p>
-}
+<h1> {{ title() }} </h1>
 
 
-<p>
-  CLs: <em>{{ cellStructures() }}</em>
-</p>
-<p>
-  hovered: <em>{{ hovered() }}</em>
-</p>
-<p>
-  data: <em>{{ data() }}</em>
-</p>
+<div class="button-box">
+  <p>Expect HRA widget here</p>
+<app-hra-viewer 
+    #hraViewer
+    [title]="title()" 
+    [hpoId]="hpoExampleTerm()"/>
+</div>
+
+
+<div class="button-box">
+<button class="btn-styled" (click)="showSplenicCyst()">Hypoplasia of the thymus (HP:0000778)</button>
+<button class="btn-styled" (click)="showHepatomegaly()">Hepatomegaly (HP:0002240)</button>
+<button class="btn-styled" (click)="popupHypoplasiaThymus()">Open HRA widget hypoplasia of thymus</button>
+</div>

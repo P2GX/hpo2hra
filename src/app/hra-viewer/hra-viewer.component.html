@@ -1,0 +1,23 @@
+<dialog #dialogEl class="hra-dialog">
+  <h1>{{ title() }}</h1><p>ach</p>
+
+
+
+@if (currentRecord(); as record) {
+  <button type="button" class="icon-button" (click)="onIconClick(record.fileUrl)">
+    <img [src]="record.fileUrl" alt="Digital Object Icon" class="button-icon" />
+  </button>
+} @else {
+  <p>Current record null</p>
+}
+
+
+<div style="margin-top: 20px; padding: 10px; background: #eee; border: 1px solid #ccc; font-family: monospace; font-size: 12px;">
+  <strong>DEBUG: currentRecord</strong>
+  <pre>{{ currentRecord() | json }}</pre>
+</div>
+
+
+
+  <button type="button" class="btn-outline-cancel" (click)="closeDialog()">Close</button>
+</dialog>

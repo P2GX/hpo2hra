@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Component, computed, inject, input } from '@angular/core';
-import { rxResource, toSignal } from '@angular/core/rxjs-interop';
+import { Injectable, computed, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { HraRecord } from '../model/model';
+
 
 
 
@@ -11,48 +11,58 @@ import { HraRecord } from '../model/model';
   providedIn: 'root',
 })
 export class HpoMapService {
-  constructor(private httpClient: HttpClient) {}
-
   private http = inject(HttpClient);
 
-  private csvRaw = toSignal(
-    this.http.get('assets/hpo-relevant-dos.csv', {
-      responseType: 'text' as const
-    })
+  // Load and parse in a single stream
+  private database = toSignal(
+    this.http.get('assets/hpo-hra-relevant-dos.csv', { responseType: 'text' }).pipe(
+      map((csvText) => this.parseCsv(csvText))
+    ),
+    { initialValue: {} as Record<string, HraRecord> }
   );
 
-  private database = computed(() => {
-    const content = this.csvRaw();
-    if (!content) return {} as Record<string, HraRecord>;
-
+  private parseCsv(content: string): Record<string, HraRecord> {
     const lines = content.split('\n');
     const lookup: Record<string, HraRecord> = {};
+    const svgLookup: Record<string, HraRecord> = {};
 
-    // Start at index 1 to skip the header row
+    // Start at 1 to skip header
     for (let i = 1; i < lines.length; i++) {
       const line = lines[i].trim();
       if (!line) continue;
 
       const [hpo_iri, hpo_label, term, term_label, do_type, digital_object, file_url] = line.split(',');
 
-      // Extract the ID (e.g., HP_0001640) from the end of the IRI
-      const idFromIri = hpo_iri.split('/').pop() || ''; 
-      
-      // Normalize the ID to match your input format (HP_ to HP:)
-      const normalizedId = idFromIri.replace('_', ':');
+      const id = hpo_iri.split('/').pop()?.replace('_', ':') || '';
 
-      lookup[normalizedId] = {
-        hpo_iri, hpo_label, term, term_label, do_type, digital_object, file_url
-      };
+      if (id) {
+        if (file_url.endsWith("svg")) {
+            lookup[id] = {
+          hpoIri: hpo_iri,
+          hpoLabel: hpo_label,
+          term,
+          termLabel: term_label,
+          doType: do_type,
+          digitalObject: digital_object,
+          fileUrl: file_url
+        }; 
+      }/* else {
+          lookup[id] = {
+            hpoIri: hpo_iri,
+            hpoLabel: hpo_label,
+            term,
+            termLabel: term_label,
+            doType: do_type,
+            digitalObject: digital_object,
+            fileUrl: file_url
+          }*/
+        }
     }
-
     return lookup;
-  });
-
-  getRecord(hpoId: string): HraRecord | null {
-    return this.database()[hpoId] || null;
   }
 
-
+  // Use a computed signal for the public API
+  // This allows components to react to the database loading
+  readonly getRecord = (hpoId: string) => computed(() => this.database()[hpoId] || null);
 
 }

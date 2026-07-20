@@ -1,125 +1,83 @@
 import {
   Component,
   computed,
-  effect,
-  ElementRef,
   inject,
   input,
   OnInit,
-  Renderer2,
   signal,
+  viewChild,
 } from '@angular/core';
-import { HraKgService, V1Service } from '@hra-api/ng-client';
 import { HpoMapService } from '../service/hpo-mapper';
-import { HraRecord } from '../model/model';
+import { HraViewerComponent } from '../hra-viewer/hra-viewer.component';
+import { Overlay } from '@angular/cdk/overlay';
+import { ComponentPortal } from '@angular/cdk/portal';
+import { HraWidgetComponent } from '../hra-widget/hra-widget.component';
+
 
 @Component({
   selector: 'app-hra-example',
-  imports: [],
+  imports: [HraViewerComponent],
   templateUrl: './hra-example.html',
   styleUrl: './hra-example.css',
 })
 export class HraExample implements OnInit {
+  ngOnInit(): void {}
+  private overlay = inject(Overlay);
+  hraViewerRef = viewChild.required<HraViewerComponent>('hraViewer');
+  hraViewerOpen = signal(false);
+  hpoMappingService = inject(HpoMapService);
+  title = signal<string>('Emphysema');
+  hpoExampleTerm = signal<string>('HP:0002097'); // emphysema
 
 
-  private hpo_mapper = inject(HpoMapService);
-  // E.g. `UBERON:0001229` for renal corpuscle
-  uberon = input<string>('UBERON:0001229'); // UBERON:0002081, cardiac atrium
-
-
-  
   hpo_target = input.required<string>(); // cardiomegaly
 
   hpo_purl = computed(() => {
     const hpo_id = this.hpo_target();
     const formattedId = hpo_id.replace(':', '_');
     return `http://purl.obolibrary.org/obo/${formattedId}`;
-  })
-
-
-  // TODO , the CSV file has http://purl.obolibrary.org/obo/HP_0410157 and 
-  // the example we have is starting with something like HP:0410157
-  uberon_record = computed<HraRecord|null>(() => {
-    return this.hpo_mapper.getRecord(this.hpo_purl());
-  })
-
-  uberon_id = computed<string|null>(() => {
-      const urecord = this.uberon_record();
-      if (! urecord) return null;
-      return urecord.term;
   });
 
-  ngOnInit(): void {
-    console.log("HraExample input=", this.hpo_target());
+
+  showSplenicCyst() {
+    this.hpoExampleTerm.set('HP:0000778'); // ,Hypoplasia of the thymus
+    this.hraViewerRef().open();
   }
 
-  // An array with Cell ontology CURIEs for highlighting the illustration substructures.
-  cellStructures = input<string[]>(['CL:123', 'CL:456']);
-
-  purl = computed(() => {
-    // TODO: Go from uberon, etc. to purl
-    return `https://purl.humanatlas.io/2d-ftu/pancreas-intercalated-duct`;
-  });
-
-  elementRef = inject(ElementRef);
-
-  renderer = inject(Renderer2);
-
-  hovered = signal<unknown | undefined>(undefined);
-
-  data = signal<unknown | undefined>(undefined);
-
-  api = inject(V1Service);
-  api2 = inject(HraKgService);
-
-  constructor() {
-    // TODO: Inset styles and script only once!
-    const head = document.head;
-    const link = this.renderer.createElement('link');
-    this.renderer.setAttribute(link, 'rel', 'stylesheet');
-    this.renderer.setAttribute(
-      link,
-      'href',
-      'https://cdn.humanatlas.io/ui/medical-illustration/styles.css',
-    );
-    this.renderer.appendChild(head, link);
-
-    const script = this.renderer.createElement('script');
-    this.renderer.setAttribute(
-      script,
-      'src',
-      'https://cdn.humanatlas.io/ui/medical-illustration/wc.js',
-    );
-    this.renderer.setAttribute(script, 'type', 'module');
-    this.renderer.appendChild(head, script);
-
-    const el = this.renderer.createElement('hra-medical-illustration');
-    this.renderer.appendChild(this.elementRef.nativeElement, el);
-    this.renderer.listen(el, 'cell-hover', (event: CustomEvent) => {
-      console.log(event.detail);
-      this.hovered.set(JSON.stringify(event.detail));
-    });
-
-    effect(() => {
-      this.renderer.setAttribute(el, 'selected-illustration', this.purl());
-      this.renderer.setAttribute(el, 'highlight', 'http://purl.obolibrary.org/obo/CL_1001433');
-    });
-
-    this.api
-      .sparqlPost({
-        sparqlQueryRequest: {
-          query: `
-            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-            SELECT * WHERE {
-              ?sub ?pred ?obj .
-            } LIMIT 10
-          `,
-        },
-      })
-      .subscribe((result) => {
-        this.data.set(JSON.stringify(result));
-      });
+  showHepatomegaly() {
+    this.hpoExampleTerm.set('HP:0002240'); // Hepatomegaly
+    this.hraViewerRef().open();
   }
-  
+
+
+  popupHypoplasiaThymus() {
+    const hpoyplasiaThymusTermid = "HP:0000778";
+    const hraRecordSignal = this.hpoMappingService.getRecord(hpoyplasiaThymusTermid);
+    const record = typeof hraRecordSignal === 'function' ? hraRecordSignal() : hraRecordSignal;
+    if (record) {
+      const digitalObject = record.digitalObject;
+      this.openHraViewer(digitalObject);
+    }
+  }
+
+  openHraViewer(digitalObject: string) {
+    // 1. Create the overlay
+    const overlayRef = this.overlay.create({
+      hasBackdrop: true,
+      backdropClass: 'cdk-overlay-dark-backdrop',
+      positionStrategy: this.overlay.position().global().centerHorizontally().centerVertically(),
+    });
+
+    // 2. Create a portal for the component
+    const portal = new ComponentPortal(HraWidgetComponent);
+
+    // 3. Attach component
+    const componentRef = overlayRef.attach(portal);
+    componentRef.setInput('purl', digitalObject);
+    // 4. Handle backdrop clicks to close
+    overlayRef.backdropClick().subscribe(() => overlayRef.detach());
+    
+    // Optional: Pass data to the component instance
+    // componentRef.instance.someInput = 'data';
+  }
 }
