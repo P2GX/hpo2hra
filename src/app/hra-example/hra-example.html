@@ -1,18 +1,56 @@
+<div class="widget-container">
+  <!-- Title with 90% width layout alignment -->
+  <h1 class="widget-title">{{ title() }}</h1>
 
-<h1> {{ title() }} </h1>
+  <div class="widget-body">
+    <!-- Autocomplete Input Section -->
+    <div class="input-group">
+      <label for="hpo-term-1" class="section-label">First HPO Term</label>
+      <input
+        id="hpo-term-1"
+        type="text"
+        class="form-control text-input-look"
+        placeholder="Type HPO term or label (e.g., Seizure)"
+        [ngModel]="selectedHpoTermLabel()"
+        (ngModelChange)="selectedHpoTermLabel.set($event)"
+        list="hpo-suggestions-1"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <datalist id="hpo-suggestions-1">
+        @for (term of filteredTermsOne(); track term) {
+          <option [value]="term"></option>
+        }
+      </datalist>
+    </div>
 
 
-<div class="button-box">
-  <p>Expect HRA widget here</p>
-<app-hra-viewer 
-    #hraViewer
-    [title]="title()" 
-    [hpoId]="hpoExampleTerm()"/>
-</div>
+    @if(selectedHpoTermId(); as hpoId) {
+      <!-- Viewer Component -->
+      <div class="viewer-wrapper">
+        <app-hra-viewer
+          #hraViewer
+          [title]="title()"
+          [hpoId]="hpoId"
+        />
+      </div>
 
+      <!-- Action / Preset Buttons -->
+      <div class="button-box">
+        <button class="btn-styled" type="button" (click)="showSvgDialog()">
+          Show SVG
+        </button>
 
-<div class="button-box">
-<button class="btn-styled" (click)="showSplenicCyst()">Hypoplasia of the thymus (HP:0000778)</button>
-<button class="btn-styled" (click)="showHepatomegaly()">Hepatomegaly (HP:0002240)</button>
-<button class="btn-styled" (click)="popupHypoplasiaThymus()">Open HRA widget hypoplasia of thymus</button>
+         <button class="btn-styled" type="button" (click)="show3dObject()">
+          Show 3d object
+        </button>
+      </div>
+    }
+  </div>
+
+  @if (threeDobjectVisible()) {
+    <h2>Dear HRA Team</h2>
+    <p>We would like to show the 3D object for {{ selectedHpoTermLabel()}} ({{selectedHpoTermId()}})</p>
+  }
+
 </div>

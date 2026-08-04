@@ -25,13 +25,13 @@ export class HraViewerComponent {
     // prototype file-based database that has map between HPO id and the corresponding HRA assets (via either CL or UBERON terms)
     hpoMappingService = inject(HpoMapService);
     // We can use this to open a dialog that will contain the new HRA content
-    private dialogEl = viewChild.required<ElementRef<HTMLDialogElement>>('dialogEl');
+    private dialogEl = viewChild.required<ElementRef<HTMLDialogElement>>('hraDialogViewerEl');
     // Retrieve contents of the data based for the current HPO identifier
     // in this prototype, we do not check whether such a record exists -- we need to decide what the desired behavior is
     currentRecord = computed(() => {
        const termId = this.hpoId();
        if (! termId) return null;
-       const hraRecordSignal = this.hpoMappingService.getRecord(termId);
+       const hraRecordSignal = this.hpoMappingService.getSvgRecord(termId);
        const record = typeof hraRecordSignal === 'function' ? hraRecordSignal() : hraRecordSignal;
        return record || null;
     });
@@ -40,6 +40,7 @@ export class HraViewerComponent {
     
 
     open() {
+      console.log("Opening Viewer hpoId?", this.hpoId());
         this.dialogEl().nativeElement.show();
     }
 
