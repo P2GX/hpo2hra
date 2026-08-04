@@ -1,0 +1,100 @@
+.widget-container {
+  // Edge spacing around the entire widget
+  padding: 1.5rem 2rem;
+  margin: 1.5rem auto;
+  max-width: 1200px;
+  box-sizing: border-box;
+
+  // Title: 90% width centered
+  .widget-title {
+    width: 90%;
+    margin: 0 auto 1.5rem auto;
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--text-color, #2c3e50);
+    border-bottom: 2px solid var(--border-color, #e2e8f0);
+    padding-bottom: 0.5rem;
+  }
+
+  // Inner content body aligned with the 90% title grid
+  .widget-body {
+    width: 90%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  // Autocomplete field styling
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+
+    .section-label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--label-color, #4a5568);
+      letter-spacing: 0.01em;
+    }
+
+    .text-input-look {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      color: var(--input-text, #2d3748);
+      background-color: var(--input-bg, #ffffff);
+      border: 1.5px solid var(--input-border, #cbd5e0);
+      border-radius: 6px;
+      box-sizing: border-box;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+      &::placeholder {
+        color: #a0aec0;
+      }
+
+      &:hover:not(:focus) {
+        border-color: #a0aec0;
+      }
+
+      &:focus {
+        outline: none;
+        border-color: var(--primary-color, #3182ce);
+        box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.15);
+      }
+    }
+  }
+
+  .viewer-wrapper {
+    width: 100%;
+  }
+
+  // Preset / Action Buttons
+  .button-box {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+
+    .btn-styled {
+      padding: 0.55rem 1.1rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--btn-text, #2b6cb0);
+      background-color: var(--btn-bg, #ebf8ff);
+      border: 1px solid var(--btn-border, #bee3f8);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+
+      &:hover {
+        background-color: #bee3f8;
+        color: #2c5282;
+      }
+
+      &:active {
+        transform: translateY(1px);
+      }
+    }
+  }
+}
