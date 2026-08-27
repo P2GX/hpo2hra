@@ -887,7 +887,7 @@ Overwrite `package.json`:
     "@angular/compiler-cli": "^21.1.0",
     "@angular/platform-browser-dynamic": "^21.1.0",
     "@schematics/angular": "^21.1.4",
-    "ng-packagr": "^21.0.0",
+    "ng-packagr": "^21.2.0",
     "typescript": "~5.9.2",
     "vitest": "^4.0.8"
   }

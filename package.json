@@ -1,14 +1,14 @@
 {
   "name": "hpo2hra",
   "version": "0.1.1",
+  "private": true,
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "storybook": "ng run hpo2hra:storybook",
-    "build-storybook": "ng run hpo2hra:build-storybook"
+    "start": "ng serve demo",
+    "build:lib": "ng build hpohra",
+    "build:demo": "ng build demo",
+    "test:lib": "ng test hpohra --watch=false",
+    "test:demo": "ng test demo --watch=false"
   },
   "prettier": {
     "printWidth": 100,
@@ -22,17 +22,13 @@
       }
     ]
   },
-  "private": true,
   "packageManager": "npm@11.8.0",
   "dependencies": {
-    "@angular/cdk": "^21.0.0",
     "@angular/common": "^21.1.0",
     "@angular/compiler": "^21.1.0",
     "@angular/core": "^21.1.0",
     "@angular/forms": "^21.1.0",
     "@angular/platform-browser": "^21.1.0",
-    "@angular/router": "^21.1.0",
-    "@hra-api/ng-client": "^0.19.0",
     "bootstrap": "^5.3.8",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
@@ -46,17 +42,8 @@
     "@angular/cli": "^21.1.4",
     "@angular/compiler-cli": "^21.1.0",
     "@angular/platform-browser-dynamic": "^21.1.0",
-    "@compodoc/compodoc": "^2.0.0",
-    "@nx/angular": "23.1.0",
-    "@nx/workspace": "23.1.0",
     "@schematics/angular": "^21.1.4",
-    "@storybook/addon-a11y": "^10.4.6",
-    "@storybook/addon-docs": "^10.4.6",
-    "@storybook/angular": "^10.4.6",
-    "jsdom": "^27.1.0",
     "ng-packagr": "^21.2.0",
-    "nx": "23.1.0",
-    "storybook": "^10.4.6",
     "typescript": "~5.9.2",
     "vitest": "^4.0.8"
   }
