@@ -13,6 +13,16 @@ npm install @p2gx/hpohra
 ```
 
 ```typescript
+import { ApplicationConfig } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHpohra } from '@p2gx/hpohra';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideHttpClient(), provideHpohra()],
+};
+```
+
+```typescript
 import { Hpohra } from '@p2gx/hpohra';
 
 @Component({
@@ -21,6 +31,13 @@ import { Hpohra } from '@p2gx/hpohra';
 })
 export class MyComponent {}
 ```
+
+**`provideHpohra()` (required):** the illustration is rendered with HuBMAP's
+[`hra-medical-illustration`](https://github.com/hubmapconsortium/hra-ui/tree/main/apps/medical-illustration)
+web component, which is only distributed as a script bundle, not an npm package.
+`provideHpohra()` loads it by injecting a `<link>`/`<script>` pointing at
+`cdn.humanatlas.io` into `document.head` on startup — allowlist that host in your
+CSP if you have one.
 
 **CSV asset (required, manual step for now):** the component looks up its data from
 `assets/hpo-hra-relevant-dos.csv` at runtime via `HttpClient`. Copy the file from

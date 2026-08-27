@@ -4,6 +4,37 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { HraRecord } from './model';
 
+// Splits one CSV record into fields, RFC4180-style: fields may be wrapped in double
+// quotes (required when they contain a comma), with `""` as an escaped quote.
+export function parseCsvLine(line: string): string[] {
+  const fields: string[] = [];
+  let field = '';
+  let inQuotes = false;
+
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+    if (inQuotes) {
+      if (char === '"' && line[i + 1] === '"') {
+        field += '"';
+        i++;
+      } else if (char === '"') {
+        inQuotes = false;
+      } else {
+        field += char;
+      }
+    } else if (char === '"') {
+      inQuotes = true;
+    } else if (char === ',') {
+      fields.push(field);
+      field = '';
+    } else {
+      field += char;
+    }
+  }
+  fields.push(field);
+  return fields;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -43,7 +74,8 @@ export class HpoMapService {
       const line = lines[i].trim();
       if (!line) continue;
 
-      const [hpo_iri, hpo_label, term, term_label, do_type, digital_object, file_url] = line.split(',');
+      const [hpo_iri, hpo_label, term, term_label, do_type, digital_object, file_url] =
+        parseCsvLine(line);
       if (!hpo_iri || !file_url) continue;
       const id = hpo_iri.split('/').pop()?.replace('_', ':') || '';
 

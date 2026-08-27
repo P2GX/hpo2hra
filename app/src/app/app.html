@@ -4,22 +4,16 @@
   <div class="widget-body">
     <div class="input-group">
       <label for="hpo-term" class="section-label">HPO Term</label>
-      <input
-        id="hpo-term"
-        type="text"
-        class="form-control text-input-look"
+      <p-autoComplete
+        inputId="hpo-term"
+        [suggestions]="searchResults()"
+        optionLabel="name"
+        [minQueryLength]="3"
+        [fluid]="true"
         placeholder="Type HPO term or label (e.g., Emphysema)"
-        [ngModel]="selectedHpoTermLabel()"
-        (ngModelChange)="selectedHpoTermLabel.set($event)"
-        list="hpo-suggestions"
-        autocomplete="off"
-        spellcheck="false"
+        (completeMethod)="onSearch($event)"
+        (onSelect)="onSelect($event)"
       />
-      <datalist id="hpo-suggestions">
-        @for (term of filteredTerms(); track term) {
-          <option [value]="term"></option>
-        }
-      </datalist>
     </div>
 
     @if (selectedHpoTermId(); as hpoId) {

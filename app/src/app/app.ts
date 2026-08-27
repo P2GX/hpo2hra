@@ -1,11 +1,13 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Hpohra } from '@p2gx/hpohra';
-import { HpoTerms } from './hpo-terms';
+import { AutoComplete, AutoCompleteCompleteEvent, AutoCompleteSelectEvent } from 'primeng/autocomplete';
+import { Subject, switchMap } from 'rxjs';
+import { HpoTerm, HpoTerms } from './hpo-terms';
 
 @Component({
   selector: 'app-root',
-  imports: [FormsModule, Hpohra],
+  imports: [AutoComplete, Hpohra],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
@@ -13,17 +15,22 @@ export class App {
   private hpoTerms = inject(HpoTerms);
 
   title = signal('HRA / HPO Viewer Widget');
-  selectedHpoTermLabel = signal('');
+  selectedTerm = signal<HpoTerm | null>(null);
 
-  availableHpoTermLabels = computed(() => this.hpoTerms.availableLabels());
+  private searchQuery$ = new Subject<string>();
 
-  filteredTerms = computed(() => {
-    const typed = this.selectedHpoTermLabel().trim().toLowerCase();
-    if (!typed) return [];
-    return this.availableHpoTermLabels()
-      .filter((t) => t.toLowerCase().includes(typed))
-      .slice(0, 20);
-  });
+  searchResults = toSignal(
+    this.searchQuery$.pipe(switchMap((query) => this.hpoTerms.search(query))),
+    { initialValue: [] as HpoTerm[] }
+  );
 
-  selectedHpoTermId = computed(() => this.hpoTerms.idForLabel(this.selectedHpoTermLabel()));
+  selectedHpoTermId = computed(() => this.selectedTerm()?.id ?? null);
+
+  onSearch(event: AutoCompleteCompleteEvent) {
+    this.searchQuery$.next(event.query);
+  }
+
+  onSelect(event: AutoCompleteSelectEvent) {
+    this.selectedTerm.set(event.value as HpoTerm);
+  }
 }

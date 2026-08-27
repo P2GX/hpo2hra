@@ -1,36 +1,35 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, computed, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { Observable, catchError, map, of } from 'rxjs';
+
+const SEARCH_URL = 'https://ontology.jax.org/api/hp/search';
+const MIN_QUERY_LENGTH = 3;
+const RESULT_LIMIT = 20;
+
+export interface HpoTerm {
+  id: string;
+  name: string;
+}
+
+interface SearchResponse {
+  terms: HpoTerm[];
+  totalCount: number;
+}
 
 @Injectable({ providedIn: 'root' })
 export class HpoTerms {
   private http = inject(HttpClient);
 
-  private labelToId = toSignal(
-    this.http.get('assets/hpo-hra-relevant-dos.csv', { responseType: 'text' }).pipe(
-      map((csvText) => this.parseLabels(csvText))
-    ),
-    { initialValue: {} as Record<string, string> }
-  );
+  search(query: string): Observable<HpoTerm[]> {
+    if (query.trim().length < MIN_QUERY_LENGTH) return of([]);
 
-  readonly availableLabels = computed(() => Object.keys(this.labelToId()));
-
-  idForLabel(label: string): string | null {
-    return this.labelToId()[label] ?? null;
-  }
-
-  private parseLabels(content: string): Record<string, string> {
-    const lines = content.split('\n');
-    const labelToId: Record<string, string> = {};
-    for (let i = 1; i < lines.length; i++) {
-      const line = lines[i].trim();
-      if (!line) continue;
-      const [hpo_iri, hpo_label] = line.split(',');
-      if (!hpo_iri) continue;
-      const id = hpo_iri.split('/').pop()?.replace('_', ':') || '';
-      if (id) labelToId[hpo_label] = id;
-    }
-    return labelToId;
+    return this.http
+      .get<SearchResponse>(SEARCH_URL, {
+        params: { q: query, page: 0, limit: RESULT_LIMIT },
+      })
+      .pipe(
+        map((response) => response.terms.map((t) => ({ id: t.id, name: t.name }))),
+        catchError(() => of([]))
+      );
   }
 }

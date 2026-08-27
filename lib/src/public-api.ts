@@ -3,3 +3,4 @@
  */
 
 export * from './lib/hpohra';
+export * from './lib/provide-hpohra';

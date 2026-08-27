@@ -1,11 +1,12 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, input } from '@angular/core';
 import { HpoMapService } from './hpo-mapper';
 
 @Component({
   selector: 'hpohra',
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: `
     @if (record(); as r) {
-      <img [src]="r.fileUrl" [alt]="'HRA illustration for ' + hpoId()" />
+      <hra-medical-illustration [selectedIllustration]="r.digitalObject" [highlight]="[r.term]" />
     } @else {
       <p>No HRA illustration found for {{ hpoId() }}</p>
     }

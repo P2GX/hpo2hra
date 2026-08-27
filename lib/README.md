@@ -12,6 +12,16 @@ npm install @p2gx/hpohra
 ## Usage
 
 ```typescript
+import { ApplicationConfig } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHpohra } from '@p2gx/hpohra';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideHttpClient(), provideHpohra()],
+};
+```
+
+```typescript
 import { Hpohra } from '@p2gx/hpohra';
 
 @Component({
@@ -22,8 +32,14 @@ export class MyComponent {}
 ```
 
 `hpoId` is the component's only input, required. When a matching illustration is
-found it's rendered as an `<img>`; otherwise a "No HRA illustration found" message
-is shown.
+found it's rendered with HuBMAP's [`hra-medical-illustration`](https://github.com/hubmapconsortium/hra-ui/tree/main/apps/medical-illustration)
+web component; otherwise a "No HRA illustration found" message is shown.
+
+**`provideHpohra()` (required):** `hra-medical-illustration` is only distributed as
+a web component bundle, not an npm package. `provideHpohra()` loads it by injecting
+a `<link>` and `<script>` tag pointing at `cdn.humanatlas.io` into `document.head`
+the first time your app starts — if you have a Content Security Policy, allowlist
+that host for `script-src`/`style-src`.
 
 ## CSV asset
 

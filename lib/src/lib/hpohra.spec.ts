@@ -21,17 +21,16 @@ describe('Hpohra', () => {
 
   afterEach(() => httpMock.verify());
 
-  it('renders the resolved image for a known hpoId', () => {
+  it('renders the resolved illustration for a known hpoId', () => {
     const fixture = TestBed.createComponent(Hpohra);
     fixture.componentRef.setInput('hpoId', 'HP:0002097');
     fixture.detectChanges();
     httpMock.expectOne('assets/hpo-hra-relevant-dos.csv').flush(CSV_FIXTURE);
     fixture.detectChanges();
 
-    const img: HTMLImageElement | null = fixture.nativeElement.querySelector('img');
-    expect(img?.getAttribute('src')).toBe(
-      'https://cdn.humanatlas.io/digital-objects/2d-ftu/lung/v1/assets/2d-ftu-lung.svg'
-    );
+    const illustration = fixture.nativeElement.querySelector('hra-medical-illustration');
+    expect(illustration?.selectedIllustration).toBe('https://purl.humanatlas.io/2d-ftu/lung');
+    expect(illustration?.highlight).toEqual(['http://purl.obolibrary.org/obo/UBERON_0002048']);
   });
 
   it('renders a fallback message for an unknown hpoId', () => {
@@ -41,7 +40,7 @@ describe('Hpohra', () => {
     httpMock.expectOne('assets/hpo-hra-relevant-dos.csv').flush(CSV_FIXTURE);
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('img')).toBeNull();
+    expect(fixture.nativeElement.querySelector('hra-medical-illustration')).toBeNull();
     expect(fixture.nativeElement.textContent).toContain('No HRA illustration found for HP:0000000');
   });
 });
