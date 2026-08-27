@@ -697,10 +697,13 @@ describe('App', () => {
 });
 ```
 
-- [ ] **Step 9: Run the demo test suite and build**
+- [ ] **Step 9: Build the library, then run the demo test suite and build**
+
+**Important — real dev workflow, discovered while executing this plan:** the CLI generator's `updateTsConfig` step points the `@p2gx/hpohra` path mapping at the library's **build output** (`./dist/hpohra`), not at `lib/src/public-api.ts` source. So the demo project only resolves `@p2gx/hpohra` after the library has been built at least once; it does not compile against lib source directly. Rebuild the lib after every lib change before touching the demo.
 
 Run:
 ```bash
+npx ng build "@p2gx/hpohra"
 npx ng test demo --watch=false
 npx ng build demo
 ```
@@ -913,7 +916,7 @@ Overwrite `tsconfig.json`:
     "target": "ES2022",
     "module": "preserve",
     "paths": {
-      "@p2gx/hpohra": ["lib/src/public-api.ts"]
+      "@p2gx/hpohra": ["./dist/hpohra"]
     }
   },
   "angularCompilerOptions": {
@@ -1029,9 +1032,12 @@ export class MyComponent {}
 
 ## Developing in this repo
 
-Run the demo app:
+The demo app resolves `@p2gx/hpohra` from the library's **build output**
+(`dist/hpohra`), not its source — build the library at least once before
+serving or building the demo, and rebuild it after any library change:
 ```bash
 npm install
+npm run build:lib
 npm run start
 ```
 

@@ -5,7 +5,7 @@
   "compilerOptions": {
     "paths": {
       "@p2gx/hpohra": [
-        "./dist/p2gx/hpohra"
+        "./dist/hpohra"
       ]
     },
     "strict": true,

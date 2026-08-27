@@ -41,7 +41,7 @@ app/                           # application project "demo" (private)
 
 angular.json                  # two projects: hpohra (lib), demo (app)
 package.json                  # root, private: true, workspace dev tooling only
-tsconfig.json                 # path mapping: "@p2gx/hpohra" -> lib/src/public-api.ts
+tsconfig.json                 # path mapping: "@p2gx/hpohra" -> ./dist/hpohra (build output)
 LICENSE                       # MIT, copyright P2GX
 scripts/get_terms_for_hra.py  # unchanged, stays at root
 .github/workflows/ci.yml
@@ -117,9 +117,11 @@ text input with its `<datalist>` suggestions, layout/styling classes — but:
   (application, root `app`).
 - Root `package.json`: `"private": true`; scripts for `build:lib`, `build:demo`,
   `test:lib`; drops storybook/nx deps and scripts.
-- `tsconfig.json`: path mapping `"@p2gx/hpohra": ["lib/src/public-api.ts"]` so the
-  demo app (and its tests) resolve the lib from source locally, using the same
-  import specifier real consumers will use post-publish.
+- `tsconfig.json`: path mapping `"@p2gx/hpohra": ["./dist/hpohra"]` (the Angular CLI
+  library generator wires this to the library's *build output*, not its source) so
+  the demo app resolves the same `@p2gx/hpohra` specifier real consumers will use
+  post-publish. In practice this means the library must be built at least once
+  before the demo can compile, and rebuilt after any library change.
 
 ## CI & npm release prep
 
