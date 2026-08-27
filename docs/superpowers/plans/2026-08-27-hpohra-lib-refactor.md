@@ -1136,8 +1136,8 @@ Overwrite `lib/package.json`:
     "access": "public"
   },
   "peerDependencies": {
-    "@angular/common": "^21.1.0",
-    "@angular/core": "^21.1.0"
+    "@angular/common": "^21.2.0",
+    "@angular/core": "^21.2.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"
@@ -1145,6 +1145,8 @@ Overwrite `lib/package.json`:
   "sideEffects": false
 }
 ```
+(Peer dependency versions come from whatever the generator auto-set based on the
+installed Angular version — `^21.2.0` here, matching Angular 21.2.22.)
 
 - [ ] **Step 2: Add the CI workflow**
 
