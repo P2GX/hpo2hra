@@ -4,5 +4,5 @@
   "lib": {
     "entryFile": "src/public-api.ts"
   },
-  "assets": ["src/hpo-hra-relevant-dos.csv"]
+  "assets": [{ "glob": "hpo-hra-relevant-dos.csv", "input": "src", "output": "." }]
 }

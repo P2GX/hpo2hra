@@ -261,9 +261,10 @@ Overwrite `lib/ng-package.json`:
   "lib": {
     "entryFile": "src/public-api.ts"
   },
-  "assets": ["src/hpo-hra-relevant-dos.csv"]
+  "assets": [{ "glob": "hpo-hra-relevant-dos.csv", "input": "src", "output": "." }]
 }
 ```
+(A bare string entry like `"src/hpo-hra-relevant-dos.csv"` copies to `dist/hpohra/src/hpo-hra-relevant-dos.csv`, preserving the source-relative path — the `{glob, input, output}` object form above is what actually lands the file at the package root, `dist/hpohra/hpo-hra-relevant-dos.csv`, confirmed by building and inspecting `dist/hpohra/`.)
 
 - [ ] **Step 6: Run the service test**
 
