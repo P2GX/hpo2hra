@@ -1,63 +1,60 @@
-# Hpo2hra
+# hpo2hra
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.4.
+A small Angular workspace with:
 
-## Requirements
+- `lib/` — the `@p2gx/hpohra` library: a single component, `<hpohra [hpoId]="...">`,
+  that renders the Human Reference Atlas illustration for a given HPO term id.
+- `app/` — a demo application exercising the library with an HPO term autocomplete.
 
-The latest Angular version (21) or raw JS and downloadable from npm.
-
-## Development server
-
-To start a local development server, run:
+## Using the library
 
 ```bash
-ng serve
+npm install @p2gx/hpohra
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+```typescript
+import { Hpohra } from '@p2gx/hpohra';
 
-## Code scaffolding
+@Component({
+  imports: [Hpohra],
+  template: `<hpohra [hpoId]="'HP:0002097'" />`,
+})
+export class MyComponent {}
+```
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+**CSV asset (required, manual step for now):** the component looks up its data from
+`assets/hpo-hra-relevant-dos.csv` at runtime via `HttpClient`. Copy the file from
+`node_modules/@p2gx/hpohra/hpo-hra-relevant-dos.csv` into your app's own
+`public/assets/` (or `src/assets/`, depending on your Angular version) and make sure
+`provideHttpClient()` is configured. See `app/` in this repo for a working example.
+
+## Developing in this repo
+
+The demo app resolves `@p2gx/hpohra` from the library's **build output**
+(`dist/hpohra`), not its source — build the library at least once before serving or
+building the demo, and rebuild it after any library change:
 
 ```bash
-ng generate component component-name
+npm install
+npm run build:lib
+npm run start
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
+Build and test the library:
 ```bash
-ng generate --help
+npm run build:lib
+npm run test:lib
 ```
 
-## Building
-
-To build the project run:
-
+Build and test the demo app:
 ```bash
-ng build
+npm run build:demo
+npm run test:demo
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## CI and releases
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+`.github/workflows/ci.yml` builds and tests both projects on every push and pull
+request. `.github/workflows/publish.yml` builds the library and runs `npm publish`
+when a GitHub Release is published (or via manual dispatch) — it requires an
+`NPM_TOKEN` repository secret with publish rights for the `@p2gx` npm scope.

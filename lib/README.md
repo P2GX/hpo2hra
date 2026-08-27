@@ -1,64 +1,34 @@
-# Hpohra
+# @p2gx/hpohra
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.0.
+An Angular component that renders the Human Reference Atlas illustration for a
+given HPO (Human Phenotype Ontology) term id.
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Install
 
 ```bash
-ng generate --help
+npm install @p2gx/hpohra
 ```
 
-## Building
+## Usage
 
-To build the library, run:
+```typescript
+import { Hpohra } from '@p2gx/hpohra';
 
-```bash
-ng build hpohra
+@Component({
+  imports: [Hpohra],
+  template: `<hpohra [hpoId]="'HP:0002097'" />`,
+})
+export class MyComponent {}
 ```
 
-This command will compile your project, and the build artifacts will be placed in the `dist/` directory.
+`hpoId` is the component's only input, required. When a matching illustration is
+found it's rendered as an `<img>`; otherwise a "No HRA illustration found" message
+is shown.
 
-### Publishing the Library
+## CSV asset
 
-Once the project is built, you can publish your library by following these steps:
-
-1. Navigate to the `dist` directory:
-
-   ```bash
-   cd dist/hpohra
-   ```
-
-2. Run the `npm publish` command to publish your library to the npm registry:
-   ```bash
-   npm publish
-   ```
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+This package ships `hpo-hra-relevant-dos.csv` at its package root. The component
+fetches it at runtime via `HttpClient` from a relative `assets/hpo-hra-relevant-dos.csv`
+path, so your app needs to copy
+`node_modules/@p2gx/hpohra/hpo-hra-relevant-dos.csv` into its own served assets
+(e.g. `public/assets/`) and provide `HttpClient` (`provideHttpClient()`).
