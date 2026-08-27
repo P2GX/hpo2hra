@@ -38,6 +38,8 @@ npx ng generate library "@p2gx/hpohra" --project-root=lib --prefix=hpohra --skip
 ```
 Expected output includes `CREATE lib/ng-package.json`, `CREATE lib/package.json`, `CREATE lib/src/public-api.ts`, `CREATE lib/src/lib/hpohra.ts`, `CREATE lib/src/lib/hpohra.spec.ts`, `UPDATE angular.json`, `UPDATE package.json`, `UPDATE tsconfig.json`.
 
+**Important:** the CLI registers the project in `angular.json` under the key `@p2gx/hpohra` (the full scoped name you passed), not `hpohra`. Until Task 5 renames it, all `ng build`/`ng test` invocations against the library must use the quoted scoped name: `ng build "@p2gx/hpohra"`. Task 5's `angular.json` rewrite renames the project key to plain `hpohra` (the npm package name stays `@p2gx/hpohra` via `lib/package.json` regardless — CLI project names and published package names don't have to match).
+
 - [ ] **Step 2: Generate the `demo` application**
 
 Run:
@@ -55,8 +57,8 @@ Expected: completes without `ERESOLVE` errors (only `@hra-api/ng-client`'s Angul
 
 Run:
 ```bash
-npx ng build hpohra
-npx ng test hpohra --watch=false
+npx ng build "@p2gx/hpohra"
+npx ng test "@p2gx/hpohra" --watch=false
 npx ng build demo
 npx ng test demo --watch=false
 ```
@@ -265,7 +267,7 @@ Overwrite `lib/ng-package.json`:
 
 - [ ] **Step 6: Run the service test**
 
-Run: `npx ng test hpohra --watch=false`
+Run: `npx ng test "@p2gx/hpohra" --watch=false`
 Expected: PASS — the generator's stub `hpohra.ts` component is untouched and still compiles fine (it's overwritten in Task 3, not deleted here); the three new `hpo-mapper.spec.ts` assertions pass. If anything fails, stop and investigate before moving on.
 
 - [ ] **Step 7: Commit**
@@ -382,8 +384,8 @@ describe('Hpohra', () => {
 
 Run:
 ```bash
-npx ng test hpohra --watch=false
-npx ng build hpohra
+npx ng test "@p2gx/hpohra" --watch=false
+npx ng build "@p2gx/hpohra"
 ```
 Expected: both `hpo-mapper.spec.ts` and `hpohra.spec.ts` pass (5 tests total); the build succeeds and `dist/hpohra/hpo-hra-relevant-dos.csv` exists after the build.
 

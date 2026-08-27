@@ -3,6 +3,11 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "paths": {
+      "@p2gx/hpohra": [
+        "./dist/p2gx/hpohra"
+      ]
+    },
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
@@ -28,6 +33,18 @@
     },
     {
       "path": "./tsconfig.spec.json"
+    },
+    {
+      "path": "./lib/tsconfig.lib.json"
+    },
+    {
+      "path": "./lib/tsconfig.spec.json"
+    },
+    {
+      "path": "./app/tsconfig.app.json"
+    },
+    {
+      "path": "./app/tsconfig.spec.json"
     }
   ]
 }
