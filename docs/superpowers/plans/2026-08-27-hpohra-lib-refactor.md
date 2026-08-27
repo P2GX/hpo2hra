@@ -30,7 +30,7 @@
 **Interfaces:**
 - Produces: two new Angular CLI projects, `hpohra` (library, root `lib`) and `demo` (application, root `app`), registered in `angular.json`. Later tasks overwrite their default-generated source files.
 
-- [ ] **Step 1: Generate the `hpohra` library**
+- [x] **Step 1: Generate the `hpohra` library**
 
 Run:
 ```bash
@@ -40,7 +40,7 @@ Expected output includes `CREATE lib/ng-package.json`, `CREATE lib/package.json`
 
 **Important:** the CLI registers the project in `angular.json` under the key `@p2gx/hpohra` (the full scoped name you passed), not `hpohra`. Until Task 5 renames it, all `ng build`/`ng test` invocations against the library must use the quoted scoped name: `ng build "@p2gx/hpohra"`. Task 5's `angular.json` rewrite renames the project key to plain `hpohra` (the npm package name stays `@p2gx/hpohra` via `lib/package.json` regardless — CLI project names and published package names don't have to match).
 
-- [ ] **Step 2: Generate the `demo` application**
+- [x] **Step 2: Generate the `demo` application**
 
 Run:
 ```bash
@@ -48,12 +48,12 @@ npx ng generate application demo --project-root=app --routing=false --style=css 
 ```
 Expected output includes `CREATE app/src/app/app.ts`, `CREATE app/src/main.ts`, `CREATE app/public/favicon.ico`, `UPDATE angular.json`, `UPDATE tsconfig.json`.
 
-- [ ] **Step 3: Install the newly-added dependencies (ng-packagr, etc.)**
+- [x] **Step 3: Install the newly-added dependencies (ng-packagr, etc.)**
 
 Run: `npm install`
 Expected: completes without `ERESOLVE` errors (only `@hra-api/ng-client`'s Angular 21 peer requirement is in play, unchanged from before).
 
-- [ ] **Step 4: Verify both projects build and test out of the box**
+- [x] **Step 4: Verify both projects build and test out of the box**
 
 Run:
 ```bash
@@ -64,7 +64,7 @@ npx ng test demo --watch=false
 ```
 Expected: all four commands succeed (the generators' default stub component/tests pass). The pre-existing `hpo2hra` project and its known-broken spec are untouched and irrelevant here.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib app angular.json package.json package-lock.json tsconfig.json
@@ -86,13 +86,13 @@ git commit -m "Scaffold hpohra library and demo application projects"
 - Produces: `HraRecord`/`HraDatabase` types from `./model`; `HpoMapService` (class, `providedIn: 'root'`) from `./hpo-mapper` with `readonly getSvgRecord: (hpoId: string) => Signal<HraRecord | null>`, `readonly getGlbRecord: (hpoId: string) => Signal<HraRecord | null>`, `readonly availableHpoMap: Signal<Record<string, string>>`. Neither file is re-exported from `public-api.ts` — internal to the library.
 - Consumes: nothing from Task 1 beyond the scaffolded project.
 
-- [ ] **Step 1: Copy the CSV data file into the library**
+- [x] **Step 1: Copy the CSV data file into the library**
 
 ```bash
 cp src/assets/hpo-hra-relevant-dos.csv lib/src/hpo-hra-relevant-dos.csv
 ```
 
-- [ ] **Step 2: Create the internal model**
+- [x] **Step 2: Create the internal model**
 
 Create `lib/src/lib/model.ts`:
 ```typescript
@@ -109,7 +109,7 @@ export interface HraRecord {
 export type HraDatabase = Record<string, HraRecord>;
 ```
 
-- [ ] **Step 3: Create the internal HpoMapService**
+- [x] **Step 3: Create the internal HpoMapService**
 
 Create `lib/src/lib/hpo-mapper.ts`:
 ```typescript
@@ -194,7 +194,7 @@ export class HpoMapService {
 
 Note: this fixes the previously-broken app-level spec, which called a nonexistent `getRecord` — the real method is `getSvgRecord`.
 
-- [ ] **Step 4: Write the service spec**
+- [x] **Step 4: Write the service spec**
 
 Create `lib/src/lib/hpo-mapper.spec.ts`:
 ```typescript
@@ -249,7 +249,7 @@ describe('HpoMapService', () => {
 });
 ```
 
-- [ ] **Step 5: Rewire ng-package.json**
+- [x] **Step 5: Rewire ng-package.json**
 
 The generator's default `hpohra.ts`/`hpohra.spec.ts` stub files are untouched here — Task 3 overwrites both.
 
@@ -266,12 +266,12 @@ Overwrite `lib/ng-package.json`:
 ```
 (A bare string entry like `"src/hpo-hra-relevant-dos.csv"` copies to `dist/hpohra/src/hpo-hra-relevant-dos.csv`, preserving the source-relative path — the `{glob, input, output}` object form above is what actually lands the file at the package root, `dist/hpohra/hpo-hra-relevant-dos.csv`, confirmed by building and inspecting `dist/hpohra/`.)
 
-- [ ] **Step 6: Run the service test**
+- [x] **Step 6: Run the service test**
 
 Run: `npx ng test "@p2gx/hpohra" --watch=false`
 Expected: PASS — the generator's stub `hpohra.ts` component is untouched and still compiles fine (it's overwritten in Task 3, not deleted here); the three new `hpo-mapper.spec.ts` assertions pass. If anything fails, stop and investigate before moving on.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add lib/src/lib/model.ts lib/src/lib/hpo-mapper.ts lib/src/lib/hpo-mapper.spec.ts lib/src/hpo-hra-relevant-dos.csv lib/ng-package.json
@@ -291,7 +291,7 @@ git commit -m "Add internal HpoMapService, model, and bundled CSV to the hpohra 
 - Consumes: `HpoMapService` from `./hpo-mapper` (Task 2) — `getSvgRecord(hpoId: string): Signal<HraRecord | null>`.
 - Produces: `Hpohra` component, selector `hpohra`, single public input `hpoId = input.required<string>()`. This is the ONLY export from `@p2gx/hpohra`.
 
-- [ ] **Step 1: Overwrite the component**
+- [x] **Step 1: Overwrite the component**
 
 Overwrite `lib/src/lib/hpohra.ts`:
 ```typescript
@@ -317,7 +317,7 @@ export class Hpohra {
 }
 ```
 
-- [ ] **Step 2: Confirm the public API file needs no change**
+- [x] **Step 2: Confirm the public API file needs no change**
 
 Read `lib/src/public-api.ts` and confirm it contains exactly:
 ```typescript
@@ -328,7 +328,7 @@ export * from './lib/hpohra';
 ```
 If it differs (e.g. references a different path), fix it to match.
 
-- [ ] **Step 3: Overwrite the component spec**
+- [x] **Step 3: Overwrite the component spec**
 
 Overwrite `lib/src/lib/hpohra.spec.ts`:
 ```typescript
@@ -381,7 +381,7 @@ describe('Hpohra', () => {
 });
 ```
 
-- [ ] **Step 4: Run the full lib test suite and build**
+- [x] **Step 4: Run the full lib test suite and build**
 
 Run:
 ```bash
@@ -392,7 +392,7 @@ Expected: both `hpo-mapper.spec.ts` and `hpohra.spec.ts` pass (5 tests total); t
 
 Run: `ls dist/hpohra/hpo-hra-relevant-dos.csv` to confirm the asset was bundled.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/src/lib/hpohra.ts lib/src/lib/hpohra.spec.ts
@@ -413,7 +413,7 @@ git commit -m "Implement the Hpohra component as the library's sole public expor
 - Consumes: `Hpohra` from `@p2gx/hpohra` (Task 3) — selector `hpohra`, input `hpoId`.
 - Produces: nothing consumed by later tasks — this is the leaf application.
 
-- [ ] **Step 1: Copy the CSV into the demo app's own assets**
+- [x] **Step 1: Copy the CSV into the demo app's own assets**
 
 ```bash
 mkdir -p app/public/assets
@@ -421,7 +421,7 @@ cp src/assets/hpo-hra-relevant-dos.csv app/public/assets/hpo-hra-relevant-dos.cs
 ```
 This is the demo app acting as its own "consumer" of the library — it wires the CSV into its `public/assets/` so both its own autocomplete lookup and the internal `HpoMapService` inside `<hpohra>` (which fetches `assets/hpo-hra-relevant-dos.csv`) can find it at `/assets/hpo-hra-relevant-dos.csv`.
 
-- [ ] **Step 2: Create the demo's own label lookup service**
+- [x] **Step 2: Create the demo's own label lookup service**
 
 Create `app/src/app/hpo-terms.ts`:
 ```typescript
@@ -465,7 +465,7 @@ export class HpoTerms {
 
 This is intentionally a separate, minimal reimplementation for the demo's autocomplete only (label → id) — it does not import anything from the library beyond `Hpohra` itself, keeping the demo a genuine external consumer of the published API.
 
-- [ ] **Step 3: Write the service spec**
+- [x] **Step 3: Write the service spec**
 
 Create `app/src/app/hpo-terms.spec.ts`:
 ```typescript
@@ -508,7 +508,7 @@ describe('HpoTerms', () => {
 });
 ```
 
-- [ ] **Step 4: Add HttpClient to the app config**
+- [x] **Step 4: Add HttpClient to the app config**
 
 Overwrite `app/src/app/app.config.ts`:
 ```typescript
@@ -520,7 +520,7 @@ export const appConfig: ApplicationConfig = {
 };
 ```
 
-- [ ] **Step 5: Rewrite the root component**
+- [x] **Step 5: Rewrite the root component**
 
 Overwrite `app/src/app/app.ts`:
 ```typescript
@@ -555,7 +555,7 @@ export class App {
 }
 ```
 
-- [ ] **Step 6: Rewrite the template**
+- [x] **Step 6: Rewrite the template**
 
 Overwrite `app/src/app/app.html`:
 ```html
@@ -592,7 +592,7 @@ Overwrite `app/src/app/app.html`:
 </div>
 ```
 
-- [ ] **Step 7: Port the widget styling (flattened from SCSS to plain CSS)**
+- [x] **Step 7: Port the widget styling (flattened from SCSS to plain CSS)**
 
 Overwrite `app/src/app/app.css`:
 ```css
@@ -666,7 +666,7 @@ Overwrite `app/src/app/app.css`:
 }
 ```
 
-- [ ] **Step 8: Rewrite the app smoke test**
+- [x] **Step 8: Rewrite the app smoke test**
 
 Overwrite `app/src/app/app.spec.ts`:
 ```typescript
@@ -697,7 +697,7 @@ describe('App', () => {
 });
 ```
 
-- [ ] **Step 9: Build the library, then run the demo test suite and build**
+- [x] **Step 9: Build the library, then run the demo test suite and build**
 
 **Important — real dev workflow, discovered while executing this plan:** the CLI generator's `updateTsConfig` step points the `@p2gx/hpohra` path mapping at the library's **build output** (`./dist/hpohra`), not at `lib/src/public-api.ts` source. So the demo project only resolves `@p2gx/hpohra` after the library has been built at least once; it does not compile against lib source directly. Rebuild the lib after every lib change before touching the demo.
 
@@ -711,7 +711,7 @@ Expected: all tests pass; build succeeds; `dist/demo/browser/assets/hpo-hra-rele
 
 Run: `ls dist/demo/browser/assets/hpo-hra-relevant-dos.csv` to confirm.
 
-- [ ] **Step 10: Commit**
+- [x] **Step 10: Commit**
 
 ```bash
 git add app/src/app/hpo-terms.ts app/src/app/hpo-terms.spec.ts app/src/app/app.ts app/src/app/app.html app/src/app/app.css app/src/app/app.spec.ts app/src/app/app.config.ts app/public/assets/hpo-hra-relevant-dos.csv
@@ -729,13 +729,13 @@ git commit -m "Build the demo app's autocomplete UI around the hpohra component"
 **Interfaces:**
 - Consumes: nothing new — this is pure removal/cleanup now that Tasks 2–4 no longer need anything from the old `src/`.
 
-- [ ] **Step 1: Delete the old scaffold**
+- [x] **Step 1: Delete the old scaffold**
 
 ```bash
 git rm -r src public tsconfig.app.json tsconfig.spec.json .storybook documentation.json
 ```
 
-- [ ] **Step 2: Rewrite angular.json to the final two-project state**
+- [x] **Step 2: Rewrite angular.json to the final two-project state**
 
 Overwrite `angular.json`:
 ```json
@@ -838,7 +838,7 @@ Overwrite `angular.json`:
 }
 ```
 
-- [ ] **Step 3: Rewrite root package.json**
+- [x] **Step 3: Rewrite root package.json**
 
 Overwrite `package.json`:
 ```json
@@ -895,7 +895,7 @@ Overwrite `package.json`:
 ```
 Note: dependency removals vs. the pre-refactor state — `@hra-api/ng-client` (only used by the deleted CDN widget), `@angular/cdk` (only used by the deleted overlay/portal code), `@angular/router` (routing is off, nothing uses it), `@compodoc/compodoc`, `@storybook/*`, `storybook`, `jsdom`, `nx`, `@nx/angular`, `@nx/workspace`.
 
-- [ ] **Step 4: Rewrite root tsconfig.json**
+- [x] **Step 4: Rewrite root tsconfig.json**
 
 Overwrite `tsconfig.json`:
 ```jsonc
@@ -935,11 +935,11 @@ Overwrite `tsconfig.json`:
 }
 ```
 
-- [ ] **Step 5: Clean up .gitignore**
+- [x] **Step 5: Clean up .gitignore**
 
 Read `.gitignore` and remove the two Storybook-only lines (`*storybook.log` and `storybook-static`) — nothing generates them anymore.
 
-- [ ] **Step 6: Full clean install and verification**
+- [x] **Step 6: Full clean install and verification**
 
 ```bash
 rm -rf node_modules
@@ -951,7 +951,7 @@ npm run test:demo
 ```
 Expected: clean install with no `ERESOLVE` errors (unchanged Angular 21 / `@hra-api/ng-client` situation is gone entirely now, since that dependency was removed); all four commands succeed.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add angular.json package.json package-lock.json tsconfig.json .gitignore
@@ -969,7 +969,7 @@ git commit -m "Remove old single-project scaffold, Storybook, Nx, and unused wid
 
 **Interfaces:** none — documentation only.
 
-- [ ] **Step 1: Add the MIT license**
+- [x] **Step 1: Add the MIT license**
 
 Create `LICENSE`:
 ```
@@ -996,7 +996,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-- [ ] **Step 2: Rewrite the root README**
+- [x] **Step 2: Rewrite the root README**
 
 Overwrite `README.md`:
 ```markdown
@@ -1061,7 +1061,7 @@ when a GitHub Release is published (or via manual dispatch) — it requires an
 `NPM_TOKEN` repository secret with publish rights for the `@p2gx` npm scope.
 ```
 
-- [ ] **Step 3: Rewrite the library's own README (shown on the npm page)**
+- [x] **Step 3: Rewrite the library's own README (shown on the npm page)**
 
 Overwrite `lib/README.md`:
 ```markdown
@@ -1101,7 +1101,7 @@ path, so your app needs to copy
 (e.g. `public/assets/`) and provide `HttpClient` (`provideHttpClient()`).
 ```
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add LICENSE README.md lib/README.md
@@ -1119,7 +1119,7 @@ git commit -m "Add MIT license and rewrite README/lib README for the npm release
 
 **Interfaces:** none — this is the last task; it verifies the whole repo end-to-end.
 
-- [ ] **Step 1: Finalize lib/package.json**
+- [x] **Step 1: Finalize lib/package.json**
 
 Overwrite `lib/package.json`:
 ```json
@@ -1148,7 +1148,7 @@ Overwrite `lib/package.json`:
 (Peer dependency versions come from whatever the generator auto-set based on the
 installed Angular version — `^21.2.0` here, matching Angular 21.2.22.)
 
-- [ ] **Step 2: Add the CI workflow**
+- [x] **Step 2: Add the CI workflow**
 
 Create `.github/workflows/ci.yml`:
 ```yaml
@@ -1175,7 +1175,7 @@ jobs:
       - run: npm run test:demo
 ```
 
-- [ ] **Step 3: Add the publish workflow**
+- [x] **Step 3: Add the publish workflow**
 
 Create `.github/workflows/publish.yml`:
 ```yaml
@@ -1207,7 +1207,7 @@ This workflow will fail until an `NPM_TOKEN` secret (with publish rights to the
 `@p2gx` scope) is added to the repository — that secret is out of scope for this
 plan; do not add it or trigger a real publish.
 
-- [ ] **Step 4: Full repo verification**
+- [x] **Step 4: Full repo verification**
 
 Run:
 ```bash
@@ -1227,7 +1227,7 @@ and that the package name shown is `@p2gx/hpohra`.
 Run `git status` and confirm the working tree is clean (everything committed) and
 `git log --oneline` shows the task-by-task commit history from this plan.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add .github/workflows/ci.yml .github/workflows/publish.yml lib/package.json
