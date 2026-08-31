@@ -13,7 +13,10 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "ES2022",
-    "module": "preserve"
+    "module": "preserve",
+    "paths": {
+      "@p2gx/hpohra": ["./dist/hpohra"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
@@ -23,11 +26,9 @@
   },
   "files": [],
   "references": [
-    {
-      "path": "./tsconfig.app.json"
-    },
-    {
-      "path": "./tsconfig.spec.json"
-    }
+    { "path": "./lib/tsconfig.lib.json" },
+    { "path": "./lib/tsconfig.spec.json" },
+    { "path": "./app/tsconfig.app.json" },
+    { "path": "./app/tsconfig.spec.json" }
   ]
 }

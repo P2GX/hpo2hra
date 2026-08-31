@@ -1,0 +1,21 @@
+{
+  "name": "@p2gx/hpohra",
+  "version": "0.1.0",
+  "description": "Angular component that renders a Human Reference Atlas illustration for a given HPO term id.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/P2GX/hpo2hra.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@angular/common": "^21.2.0",
+    "@angular/core": "^21.2.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "sideEffects": false
+}

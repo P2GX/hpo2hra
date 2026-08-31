@@ -1,0 +1,43 @@
+.widget-container {
+  padding: 1.5rem 2rem;
+  margin: 1.5rem auto;
+  max-width: 1200px;
+  box-sizing: border-box;
+}
+
+.widget-container .widget-title {
+  width: 90%;
+  margin: 0 auto 1.5rem auto;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--text-color, #2c3e50);
+  border-bottom: 2px solid var(--border-color, #e2e8f0);
+  padding-bottom: 0.5rem;
+}
+
+.widget-container .widget-body {
+  width: 90%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.widget-container .input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.widget-container .input-group .section-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--label-color, #4a5568);
+  letter-spacing: 0.01em;
+}
+
+.widget-container .viewer-wrapper {
+  width: 100%;
+  height: 500px;
+}
